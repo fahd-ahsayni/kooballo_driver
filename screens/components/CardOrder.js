@@ -4,7 +4,8 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Text } from "native-base";
 import { useDispatch } from "react-redux";
-import { setChateauDetails } from "../../config/app-slice";
+import { setChateauDetails, setCostumerId } from "../../config/app-slice";
+import { supabase } from "../../supabase/costumer";
 
 const CardOrder = ({
   chateau_id,
@@ -18,23 +19,43 @@ const CardOrder = ({
   created_at,
   chateau_latitude,
   chateau_longitude,
+  id,
 }) => {
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
-  const URLImage = `https://ddyfjmyqfdmblkhyinby.supabase.co/storage/v1/object/public/avatars/${costumer_id}/${chateau_name}`;
+  const URLImage = `https://xnhwcsmrleizinqhdbdy.supabase.co/storage/v1/object/public/avatars/${costumer_id}/${chateau_name}`;
+
+  const OrderWaiting = async () => {
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ waiting: true })
+      .eq("id", id);
+
+    if (error) {
+      console.log("Error: ", error);
+    } else {
+      console.log("Successfully");
+    }
+  };
 
   const handleClick = () => {
     dispatch(
       setChateauDetails({
-        id: chateau_id,
+        costumer_id: costumer_id,
+        id: id,
+        city: chateau_city,
         name: chateau_name,
+        litres: chateau_litres,
         latitude: chateau_latitude,
         longitude: chateau_longitude,
+        created_at: format(new Date(created_at), "h:mm aa"),
+        adress: `${chateau_street} N°: ${chateau_house}, ${chateau_quarter}`,
       })
     );
     navigation.navigate("MapScreen");
+    OrderWaiting();
   };
 
   return (

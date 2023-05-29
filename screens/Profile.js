@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { supabase as supabaseDriver } from "../supabase/driver";
+import { supabase } from "../supabase/driver";
 import { Alert } from "native-base";
 
 const Line = ({ title, value, edit = false }) => {
@@ -29,11 +29,11 @@ export default function Profile() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    supabaseDriver.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
-    supabaseDriver.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
   }, []);
@@ -47,7 +47,7 @@ export default function Profile() {
       //   setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
-      let { data, error, status } = await supabaseDriver
+      let { data, error, status } = await supabase
         .from("profiles")
         .select(`*`)
         .eq("id", session?.user.id)
@@ -67,9 +67,6 @@ export default function Profile() {
       //   setLoading(false);
     }
   }
-
-  const ImageURL =
-    "https://xwhkyhdybumciizixiih.supabase.co/storage/v1/object/public/avatars/a6d70a9d-100d-4d25-9eb3-f0b33be5a6d6.jpg";
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -95,8 +92,8 @@ export default function Profile() {
 
           <View className="w-full px-4">
             <Line title="Full Name" value={profileData?.full_name} />
-            <Line title="Mobile" value={profileData?.mobile} edit={true} />
-            <Line title="Email" value={profileData?.email} edit={true} />
+            <Line title="Mobile" value={profileData?.mobile}  />
+            <Line title="Email" value={profileData?.email} />
             <Line title="Gender" value={profileData?.gender} />
             <Line title="CIN" value={profileData?.cin} />
             <Line title="Birthday" value={profileData?.birthday} />
@@ -110,11 +107,11 @@ export default function Profile() {
         </View>
 
         <View className="w-full px-4">
-          <Line title="Model" value="Camry" />
-          <Line title="Year" value="2018" />
-          <Line title="Licence plate" value="43A 364.82" />
+          <Line title="Model" value={profileData?.model}  />
+          <Line title="Year" value={profileData?.year} />
+          <Line title="Licence plate" value={profileData?.licenece_plate}  />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView> 
   );
 }

@@ -86,16 +86,7 @@ export default function Acoount() {
                 </Text>
               </View>
             ),
-            headerRight: () => (
-              <View className="flex-1 justify-center items-start ml-5">
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  className="px-4 py-2 rounded"
-                >
-                  <Icon name="chevron-back-outline" size={24} color="#00B2EB" />
-                </TouchableOpacity>
-              </View>
-            ),
+            headerRight: () => <></>,
           })}
         />
       </Stack.Navigator>

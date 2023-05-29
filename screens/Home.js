@@ -11,7 +11,6 @@ export default function Home() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-  
         name="Orders"
         options={{
           tabBarLabel: () => <></>,
