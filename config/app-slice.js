@@ -11,6 +11,7 @@ const initialState = {
   adress: null,
   city: null,
   litres: 0,
+  isAlreadyAccepted: false,
 };
 
 export const appSlice = createSlice({
@@ -21,6 +22,7 @@ export const appSlice = createSlice({
       state.isActive = action.payload;
     },
     setChateauDetails(state, action) {
+      state.isAlreadyAccepted = action.payload.isAlreadyAccepted;
       state.costumer_id = action.payload.costumer_id;
       state.id = action.payload.id;
       state.city = action.payload.city;
@@ -31,10 +33,13 @@ export const appSlice = createSlice({
       state.created_at = action.payload.created_at;
       state.litres = action.payload.litres;
     },
+    setIsAlreadyAccepted: (state, action) => {
+      state.isAlreadyAccepted = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setIsActive, setChateauDetails } = appSlice.actions;
+export const { setIsActive, setChateauDetails, setIsAlreadyAccepted } = appSlice.actions;
 
 export default appSlice.reducer;

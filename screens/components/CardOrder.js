@@ -4,11 +4,10 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { format } from "date-fns";
 import { Text } from "native-base";
 import { useDispatch } from "react-redux";
-import { setChateauDetails, setCostumerId } from "../../config/app-slice";
+import { setChateauDetails, setCostumerId, setIsAlreadyAccepted } from "../../config/app-slice";
 import { supabase } from "../../supabase/costumer";
 
 const CardOrder = ({
-  chateau_id,
   chateau_name,
   chateau_litres,
   chateau_city,
@@ -20,42 +19,31 @@ const CardOrder = ({
   chateau_latitude,
   chateau_longitude,
   id,
+  driver_accept,
 }) => {
+
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
   const URLImage = `https://xnhwcsmrleizinqhdbdy.supabase.co/storage/v1/object/public/avatars/${costumer_id}/${chateau_name}`;
 
-  const OrderWaiting = async () => {
-    const { data, error } = await supabase
-      .from("orders")
-      .update({ waiting: true })
-      .eq("id", id);
-
-    if (error) {
-      console.log("Error: ", error);
-    } else {
-      console.log("Successfully");
-    }
-  };
-
   const handleClick = () => {
-    dispatch(
-      setChateauDetails({
-        costumer_id: costumer_id,
-        id: id,
-        city: chateau_city,
-        name: chateau_name,
-        litres: chateau_litres,
-        latitude: chateau_latitude,
-        longitude: chateau_longitude,
-        created_at: format(new Date(created_at), "h:mm aa"),
-        adress: `${chateau_street} N°: ${chateau_house}, ${chateau_quarter}`,
-      })
-    );
-    navigation.navigate("MapScreen");
-    OrderWaiting();
+      dispatch(
+        setChateauDetails({
+          isAlreadyAccepted: driver_accept,
+          costumer_id: costumer_id,
+          id: id,
+          city: chateau_city,
+          name: chateau_name,
+          litres: chateau_litres,
+          latitude: chateau_latitude,
+          longitude: chateau_longitude,
+          created_at: format(new Date(created_at), "h:mm aa"),
+          adress: `${chateau_street} N°: ${chateau_house}, ${chateau_quarter}`,
+        })
+      );
+      navigation.navigate("MapScreen");
   };
 
   return (

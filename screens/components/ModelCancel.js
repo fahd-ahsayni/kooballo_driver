@@ -10,21 +10,20 @@ const ModelCancel = () => {
 
   const id = useSelector((state) => state.appSlice.id);
 
-  const OrderComplete = async (isAccept) => {
-    const { data, error } = await supabase
-      .from("orders")
-      .update({ driver_accept: isAccept, waiting: false })
-      .eq("id", id);
-
-    if (error) {
-      console.log("Error: ", error);
-    } else {
-      console.log("Successfully");
+  const handleOrderComplete = async () => {
+    try {
+      await supabase
+        .from("orders")
+        .update({ driver_accept: false, waiting: false })
+        .eq("id", id);
+    } catch (error) {
+      console.log("Error updating order:", error);
     }
   };
 
+
   clickHandler = () => {
-    OrderComplete(false);
+    handleOrderComplete();
     setShowModal(false);
     navigation.navigate("Home");
   };

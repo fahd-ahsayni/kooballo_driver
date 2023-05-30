@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Image } from "react-native";
-import { useSelector } from "react-redux";
-import { HStack, Heading, Spinner } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
+import { HStack, Heading, Spinner, useNativeBase } from "native-base";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import TankImage from "../assets/tank.png";
@@ -9,11 +9,16 @@ import TruckImage from "../assets/truck.png";
 import TrackinMapBottom from "./components/TrackinMapBottom";
 import { getRoute, decode } from "./utils";
 import { useCallback } from "react";
+import { setIsAlreadyAccepted } from "../config/app-slice";
+import { useNavigation } from "@react-navigation/native";
 
 const LOCATION_GRANTED = "granted";
 const MAP_TYPE = "roadmap";
 
 const MapScreen = () => {
+
+  const navigation = useNavigation();
+
   const [location, setLocation] = useState(null);
   const [coordinates, setCoordinates] = useState([]);
   const [anotherLocation, setAnotherLocation] = useState({});
@@ -21,6 +26,7 @@ const MapScreen = () => {
   const chateau_name = useSelector((state) => state.appSlice.name);
   const chateau_latitude = useSelector((state) => state.appSlice.latitude);
   const chateau_longitude = useSelector((state) => state.appSlice.longitude);
+
 
   const fetchLocation = useCallback(async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -45,10 +51,6 @@ const MapScreen = () => {
     return () => clearInterval(timer);
   }, [fetchLocation]);
 
-  const handleRefresh = () => {
-    fetchLocation();
-  };
-
   useEffect(() => {
     setAnotherLocation({
       latitude: parseFloat(chateau_latitude),
@@ -69,9 +71,9 @@ const MapScreen = () => {
       {location ? (
         <>
           <MapView
+          className="-mb-12"
             style={{ flex: 1 }}
-            mapType="roadmap"
-            pitchEnabled={true}
+            mapType={MAP_TYPE}
             initialRegion={{
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,

@@ -1,4 +1,4 @@
-import { Button, Center, Modal, useNativeBase } from "native-base";
+import { Button, Center, Input, Modal, Text, View, useNativeBase } from "native-base";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { supabase } from "../../supabase/costumer";
@@ -11,27 +11,26 @@ const ModelAccept = () => {
 
   const id = useSelector((state) => state.appSlice.id);
 
-  const OrderComplete = async (isAccept) => {
-    const { data, error } = await supabase
-      .from("orders")
-      .update({ driver_accept: isAccept, waiting: false })
-      .eq("id", id);
-
-    if (error) {
-      console.log("Error: ", error);
-    } else {
-      console.log("Successfully");
+  const handleOrderComplete = async () => {
+    try {
+      await supabase
+        .from("orders")
+        .update({ driver_accept: true })
+        .eq("id", id);
+    } catch (error) {
+      console.log("Error updating order:", error);
     }
   };
 
   clickHandler = () => {
-    OrderComplete(true);
-    setShowModal(false);
+    handleOrderComplete();
     navigation.navigate("Home");
   };
 
   return (
-    <Center>
+    <View className="mt-4">
+      <Text fontSize="sm" bold color="primary.600">Please enter the order code :</Text>
+      <Input className="text-xl text-center" variant="filled" placeholder="1b5C44**" borderColor="primary.600" />
       <Button
         onPress={() => setShowModal(true)}
         className="bg-sky-500 mt-4"
@@ -40,7 +39,7 @@ const ModelAccept = () => {
       >
         Order Complete
       </Button>
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      {/* <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="350" maxH="212">
           <Modal.CloseButton />
           <Modal.Header>Confirm Order</Modal.Header>
@@ -67,8 +66,8 @@ const ModelAccept = () => {
             </Button.Group>
           </Modal.Footer>
         </Modal.Content>
-      </Modal>
-    </Center>
+      </Modal> */}
+    </View>
   );
 };
 
