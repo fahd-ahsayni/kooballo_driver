@@ -12,6 +12,7 @@ const initialState = {
   city: null,
   litres: 0,
   isAlreadyAccepted: false,
+  orderKey: null,
 };
 
 export const appSlice = createSlice({
@@ -22,6 +23,7 @@ export const appSlice = createSlice({
       state.isActive = action.payload;
     },
     setChateauDetails(state, action) {
+      state.orderKey = action.payload.orderKey;
       state.isAlreadyAccepted = action.payload.isAlreadyAccepted;
       state.costumer_id = action.payload.costumer_id;
       state.id = action.payload.id;
