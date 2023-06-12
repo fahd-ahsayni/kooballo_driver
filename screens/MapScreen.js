@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { HStack, Heading, Spinner, useNativeBase } from "native-base";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
@@ -9,7 +9,6 @@ import TruckImage from "../assets/truck.png";
 import TrackinMapBottom from "./components/TrackinMapBottom";
 import { getRoute, decode } from "./utils";
 import { useCallback } from "react";
-import { setIsAlreadyAccepted } from "../config/app-slice";
 import { useNavigation } from "@react-navigation/native";
 
 const LOCATION_GRANTED = "granted";
@@ -68,6 +67,7 @@ const MapScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      
       {location ? (
         <>
           <MapView

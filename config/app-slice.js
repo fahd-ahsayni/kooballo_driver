@@ -13,6 +13,7 @@ const initialState = {
   litres: 0,
   isAlreadyAccepted: false,
   orderKey: null,
+  price: 0.0
 };
 
 export const appSlice = createSlice({
@@ -34,6 +35,8 @@ export const appSlice = createSlice({
       state.longitude = action.payload.longitude;
       state.created_at = action.payload.created_at;
       state.litres = action.payload.litres;
+      state.price = action.payload.price;
+      state.photo = action.payload.photo;
     },
     setIsAlreadyAccepted: (state, action) => {
       state.isAlreadyAccepted = action.payload;

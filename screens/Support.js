@@ -13,7 +13,7 @@ export default function Support() {
         relations center at.
       </Text>
       <Icon name="alarm-outline" color="#00B2EB" size={76} />
-      <View className="border mt-8 rounded-xl border-[#00B2EB] py-2.5 w-full">
+      <View className="border mt-8 rounded border-[#00B2EB] py-2.5 w-full">
         <Text className="font-semibold text-xl text-center mb-2.5">
           Monday - saturday
         </Text>
@@ -23,14 +23,14 @@ export default function Support() {
       </View>
       <TouchableOpacity
         onPress={()=>{Linking.openURL('tel:0808657569');}}
-        className="py-4 mt-12 flex flex-row items-center space-x-2 justify-center bg-[#00B2EB] w-full rounded-xl"
+        className="py-4 mt-12 flex flex-row items-center space-x-2 justify-center bg-[#00B2EB] w-full rounded"
       >
         <Icon name="call" color="#fff" size={20} />
         <Text className="text-white text-center font-bold uppercase">Call Us</Text>
       </TouchableOpacity>
       <TouchableOpacity
          onPress={()=>{Linking.openURL('https://wa.me/212808657569');}}
-        className="py-4 mt-4 flex flex-row items-center space-x-2 justify-center bg-green-500 w-full rounded-xl"
+        className="py-4 mt-4 flex flex-row items-center space-x-2 justify-center bg-green-500 w-full rounded"
       >
         <Icon name="logo-whatsapp" color="#fff" size={20} />
         <Text className="text-white text-center font-bold uppercase">Whatsapp</Text>

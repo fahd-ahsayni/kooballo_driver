@@ -10,6 +10,7 @@ export default function TrackinMapBottom() {
   const adress = useSelector((state) => state.appSlice.adress);
   const city = useSelector((state) => state.appSlice.city);
   const litres = useSelector((state) => state.appSlice.litres);
+  const photo = useSelector((state) => state.appSlice.photo);
 
   return (
     <View
@@ -24,13 +25,13 @@ export default function TrackinMapBottom() {
 
         elevation: 24,
       }}
-      className="px-6 py-8 rounded-3xl w-full bg-white"
+      className="px-6 py-8 rounded-t-3xl w-full bg-white"
     >
       <View className="mt-1.5">
         <View className="flex flex-row justify-center items-center">
           <Image
             source={{
-              uri: `https://xnhwcsmrleizinqhdbdy.supabase.co/storage/v1/object/public/avatars/${costumer_id}/${name}`,
+              uri: photo,
             }}
             className="w-24 h-20 rounded mr-4"
           />

@@ -1,79 +1,124 @@
-import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { SafeAreaView, FlatList, StyleSheet } from "react-native";
 import { supabase as supabaseCostumer } from "../supabase/costumer";
 import CardOrder from "./components/CardOrder";
-import { useDispatch, useSelector } from "react-redux";
-import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { setIsAlreadyAccepted } from "../config/app-slice";
-import CardUi from "./components/CardUi";
+import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import { Spinner, VStack, Center, Text, View, Button } from "native-base";
+import { useFocusEffect } from "@react-navigation/native";
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+  },
+  screen: {
+    flex: 1,
+  },
+});
+
+const LoadingView = () => (
+  <View style={styles.screen}>
+    <Center flex={1}>
+      <Spinner color="#0ea5e9" size="lg" />
+    </Center>
+  </View>
+);
+
+const EmptyView = ({ onRefresh }) => (
+  <View style={styles.screen}>
+    <Center flex={1}>
+      <Text fontSize="lg" color="gray.600">
+        No orders at the moment.
+      </Text>
+      <Button
+        className="bg-sky-500 mt-4"
+        _text={{ fontWeight: "semibold" }}
+        onPress={onRefresh}
+      >
+        Refresh
+      </Button>
+    </Center>
+  </View>
+);
 
 export default function HomePage() {
-  const [ordersData, setOrdersData] = useState();
+  const [ordersData, setOrdersData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const online = useSelector((state) => state.appSlice.isActive);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
+    setIsLoading(true);
     try {
       const { data, error } = await supabaseCostumer.from("orders").select("*");
       if (error) throw error;
 
       setOrdersData(data);
     } catch (error) {
-      console.log("Error fetching orders:", error);
-      setOrdersData(null);
+      console.error("Error fetching orders:", error);
+      setOrdersData([]);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+    }, [fetchOrders])
+  );
 
   const handleRefresh = () => {
     fetchOrders();
   };
 
+  const incompleteOrders = ordersData.filter((order) => !order.is_complete);
+
   return (
-    <SafeAreaView className="px-6 pt-8 flex-1 justify-start -mt-12 items-start bg-white">
-      <View className="pt-16 pb-2 flex flex-row items-center justify-between w-full">
-        <Text className="font-semibold text-lg">New Orders :</Text>
-        <TouchableOpacity
-          onPress={() => handleRefresh()}
-          className="flex flex-row justify-center bg-sky-500 items-center space-x-2 px-3 py-1.5 rounded"
-        >
-          <Icon name="reload-circle-outline" size={24} color="#fff" />
-          <Text className="font-semibold text-white">
-            Click here to refresh
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {online ? (
-        <ScrollView className="w-full">
-          {ordersData?.filter(order => !order.is_complete).map((order, key) => (
-            <CardOrder {...order} key={key} />
-          ))}
-        </ScrollView>
-      ) : (
-        <View className="w-full h-full justify-center items-center">
-          <View className="bg-yellow-400 -mt-52 flex flex-row items-center px-8 w-full py-4 rounded">
-            <View className="mr-4">
-              <Icon name="power" size={32} />
-            </View>
-            <View>
-              <Text className="text-lg font-semibold">You are offline !</Text>
-              <Text className="pb-2 text-gray-800 font-semibold">
-                Go online to start accepting orders.
-              </Text>
-            </View>
+    <SafeAreaView style={styles.safeArea}>
+      <VStack space={4} className="h-full justify-center">
+        {online ? (
+          isLoading ? (
+            <LoadingView />
+          ) : incompleteOrders.length > 0 ? (
+            <FlatList
+              data={incompleteOrders}
+              renderItem={({ item }) => <CardOrder {...item} />}
+              keyExtractor={(item) => item.id}
+              refreshing={isLoading}
+              onRefresh={handleRefresh}
+            />
+          ) : (
+            <EmptyView onRefresh={handleRefresh} />
+          )
+        ) : (
+          <View className="h-screen items-center justify-center">
+            <Center flex={1}>
+              <VStack
+                alignItems="center"
+                space={2}
+                bg="yellow.400"
+                py={4}
+                px={8}
+                borderRadius="lg"
+              >
+                <Ionicons name="power" size={32} />
+                <Text fontSize="lg" fontWeight="bold">
+                  You are offline !
+                </Text>
+                <Text fontSize="sm" color="gray.800" fontWeight="bold">
+                  Go online to start accepting orders.
+                </Text>
+              </VStack>
+            </Center>
           </View>
-        </View>
-      )}
+        )}
+      </VStack>
     </SafeAreaView>
   );
 }

@@ -7,9 +7,11 @@ import MapScreen from "../MapScreen";
 
 import Icon from "react-native-vector-icons/Ionicons";
 import SwitchMode from "../components/SwitchMode";
-import { Pressable, Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import AcceptOrder from "../AcceptOrder";
+import { Image } from "native-base";
+import Logo from "../../assets/adaptive-icon.png";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,8 +24,7 @@ export default function Acoount() {
         <Stack.Screen
           name="WorkingMode"
           options={() => ({
-            headerTitle: "",
-            headerShadowVisible: false,
+            headerShown: false,
           })}
           component={WorkingMode}
         />
@@ -32,18 +33,21 @@ export default function Acoount() {
           component={Home}
           options={({ navigation }) => ({
             headerShadowVisible: false,
-            headerTitle: online ? "online" : "offline",
-            headerTitleAlign: "center",
-            headerTintColor: online ? "#22c55e" : "#ef4444",
+            headerTitle: "",
             headerLeft: () => (
-              <Pressable
-                className="h-12 w-12 flex justify-center items-center"
-                onPress={() => {}}
-              ></Pressable>
+              <Image source={Logo} alt="Kooballo" className="w-32 h-12" />
             ),
+
             headerRight: () => (
-              <View className="flex px-4 flex-row items-center space-x-3 justify-end">
-                <SwitchMode size={30} />
+              <View className="flex-row justify-around">
+                <SwitchMode size={24} />
+                <Text
+                  className={`${
+                    online ? "text-[#22c55e]" : "text-[#ef4444]"
+                  } font-bold text-base`}
+                >
+                  {online ? "ON" : "OFF"}
+                </Text>
               </View>
             ),
           })}
